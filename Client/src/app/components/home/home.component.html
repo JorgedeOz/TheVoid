@@ -1,0 +1,89 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1>Orders and Tickets</h1>
+  </div>
+</div>
+<div *ngIf="showAlert">
+    <div class="alert {{ alertType }} alert-dismissible fade show" role="alert">
+      {{ alertMessage }}
+    </div>  
+</div>
+<div>
+  <div class="row">
+    <div class="col-md-2">
+      <button class="btn btn-primary" (click)="showModal()">Add new Order </button>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary" (click)="showBrowser();">Upload tickets CSV file </button>      
+      <input id="fileInput" style="display: none;" type="file" #fileInput accept=".csv" (change)="onFileChange($event)" />
+    </div>
+  </div>
+  <div class="row">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Order Id</th>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Ticket</th>
+          <th scope="col">Event date</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="!isLoading">
+        <tr *ngFor="let order of Orders">
+          <td>{{ order.OrderId }}</td>
+          <td>{{ order.FirstName }}</td>
+          <td>{{ order.LastName }}</td>
+          <td>{{ order.TicketNumber }}</td>
+          <td>{{ order.EventDate | date }}</td>
+          <td><a (click)="show(order)">Edit</a> | <a (click)="delete(order)">Delete</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">New Order</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6">
+            <label>First Name</label>
+            <input type="text" name="fistName" class="form-control" maxlength="50" required [(ngModel)]="CurrentOrder.FirstName"/>
+          </div>
+          <div class="col-md-6">
+              <label>Last Name</label>
+              <input type="text" name="lastName" class="form-control" maxlength="50"  required [(ngModel)]="CurrentOrder.LastName" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+              <label>Ticket</label>
+              <input type="text" name="ticket" class="form-control" maxlength="50" required [(ngModel)]="CurrentOrder.TicketNumber" />
+            </div>
+            <div class="col-md-6">
+                <label>Event date</label>
+                <input id="date" type="date" name="eventDate" class="form-control" maxlength="50" required [(ngModel)]="CurrentOrder.EventDate" value="{{ CurrentOrder.EventDate }}" />
+              </div>
+          </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="saveOrder()" [(disabled)]="buttonDisabled">{{ saveButtonText }}</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" [(disabled)]="buttonDisabled">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
