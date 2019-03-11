@@ -66,6 +66,7 @@ namespace TheVoid
                         while (!reader.EndOfStream)
                         {                               
                             var line = reader.ReadLine().Split(',');
+                            if(line.Length != 5) return BadRequest("Invalid file format!");
                             csvLines.Add(line);
                         }
                     }

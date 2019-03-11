@@ -19,3 +19,4 @@ c:\Proyectos\TheVoid\Server\obj\Debug\netcoreapp2.0\TheVoid.AssemblyInfoInputs.c
 c:\Proyectos\TheVoid\Server\obj\Debug\netcoreapp2.0\TheVoid.AssemblyInfo.cs
 c:\Proyectos\TheVoid\Server\obj\Debug\netcoreapp2.0\TheVoid.dll
 c:\Proyectos\TheVoid\Server\obj\Debug\netcoreapp2.0\TheVoid.pdb
+c:\Proyectos\TheVoid\Server\obj\Debug\netcoreapp2.0\TheVoid.csprojResolveAssemblyReference.cache

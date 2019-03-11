@@ -46,7 +46,7 @@ export class HomeComponent implements OnInit  {
   private showError(errorDesc: string, error:HttpErrorResponse){
     this.showAlert = true;
     this.alertType = "alert-danger";
-    this.alertMessage = `${errorDesc}: "${error.statusText}"`;
+    this.alertMessage = `${errorDesc}: "${error.status} - ${error.statusText} - ${error.error}" `;
     console.error(error);    
   }
 
