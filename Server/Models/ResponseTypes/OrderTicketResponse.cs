@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 
 namespace TheVoid.Models.ResponseTypes{   
     public class OrderTicketModel{
+        [JsonProperty("Id")]
+        public int Id { get; set; }
         [JsonProperty("OrderId")]
         public int OrderId { get; set; }
         [JsonProperty("FirstName")]

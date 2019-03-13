@@ -26,7 +26,7 @@ export class ApiService {
     return this.http.post<Array<OrderTicketModel>>(`${this.API_ENDPOINT}/UploadFile`,data);
   }
 
-  public DeleteOrder(orderId: number,ticketId:number): Observable<Array<OrderTicketModel>>{ 
-    return this.http.delete<Array<OrderTicketModel>>(`${this.API_ENDPOINT}/${orderId}/${ticketId}`);
+  public DeleteOrder(id: number,ticketId:number): Observable<Array<OrderTicketModel>>{ 
+    return this.http.delete<Array<OrderTicketModel>>(`${this.API_ENDPOINT}/${id}/${ticketId}`);
   }
 }

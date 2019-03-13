@@ -16,9 +16,10 @@ namespace TheVoid.Models.Manager{
                 response = 
                 (
                     from o in db.Orders 
-                    join t in db.Tickets on o.Order_Id equals t.Order_Id
+                    join t in db.Tickets on o.Id equals t.Order_Id
                     select new OrderTicketModel()
                     {
+                        Id = o.Id,
                         OrderId = o.Order_Id,
                         FirstName = o.First_Name,
                         LastName = o.Last_Name,
@@ -37,29 +38,23 @@ namespace TheVoid.Models.Manager{
                 using(var db = new DBContext())
                 {                        
                     foreach(var line in data){
-                        SaveOrder(db, line[1],line[2],int.Parse(line[0]));
-                        SaveTicket(db,int.Parse(line[0]),line[3],DateTime.Parse(line[4]));                        
+                        var id = SaveOrder(db, int.Parse(line[0]),line[1],line[2]);
+                        SaveTicket(db,id,line[3],DateTime.Parse(line[4]));                        
                     }
                 }
                 scope.Complete();
             }
         }
 
-        private int SaveOrder(DBContext db, string firstName, string lastName, int? orderId = null){
+        private int SaveOrder(DBContext db, int orderId, string firstName, string lastName){
              var order = new Order(){                
                 First_Name = firstName,
-                Last_Name = lastName
+                Last_Name = lastName,
+                Order_Id = orderId
             };
-            if(orderId.HasValue){
-                order.Order_Id = orderId.Value;
-                db.Database.ExecuteSqlCommand("SET IDENTITY_INSERT Orders ON"); 
-            }                                    
-            db.Orders.AddRange(order);       
-            db.SaveChanges();        
-            if(orderId.HasValue){ 
-                db.Database.ExecuteSqlCommand("SET IDENTITY_INSERT Orders OFF");   
-            }    
-            return order.Order_Id;                    
+            db.Orders.Add(order);       
+            db.SaveChanges();                   
+            return order.Id;                    
         }
 
         private void SaveTicket(DBContext db, int orderId, string ticketNumber, DateTime eventDate){
@@ -68,16 +63,16 @@ namespace TheVoid.Models.Manager{
                 Ticket_Number = ticketNumber,
                 Event_Date = eventDate
             };            
-            db.Tickets.AddRange(ticket);
+            db.Tickets.Add(ticket);
             db.SaveChanges();          
         }
 
-        public bool DeleteOrder(int orderId,int ticketId)
+        public bool DeleteOrder(int id,int ticketId)
         {
             using(var db = new DBContext()){
-                var order = db.Orders.Where(o => o.Order_Id == orderId).FirstOrDefault();
+                var order = db.Orders.Where(o => o.Id == id).FirstOrDefault();
                 if(order == null) return false;
-                RemoveTicket(orderId,ticketId);
+                RemoveTicket(id,ticketId);
                 db.Remove(order);
                 db.SaveChanges();            
             }
@@ -87,7 +82,7 @@ namespace TheVoid.Models.Manager{
         private void RemoveTicket(int orderId, int ticketId)
         {
             using(var db = new DBContext()){
-                var ticket = db.Tickets.Where(o => o.Order_Id == orderId && o.Ticket_Id  == ticketId).FirstOrDefault();
+                var ticket = db.Tickets.Where(t => t.Order_Id == orderId && t.Ticket_Id  == ticketId).FirstOrDefault();
                 if(ticket != null){
                     db.Remove(ticket);                 
                 }
@@ -98,7 +93,7 @@ namespace TheVoid.Models.Manager{
         internal void SaveOrderTicket(OrderTicketModel orderTicket)
         {
             using(var db = new DBContext()){
-                int orderId = SaveOrder(db,orderTicket.FirstName,orderTicket.LastName);
+                int orderId = SaveOrder(db,orderTicket.OrderId, orderTicket.FirstName,orderTicket.LastName);
                 SaveTicket(db,orderId,orderTicket.TicketNumber,orderTicket.EventDate);
             }
         }
@@ -106,16 +101,17 @@ namespace TheVoid.Models.Manager{
         internal void UpdateOrderTicket(OrderTicketModel orderTicket)
         {
             using(var db = new DBContext()){
-                UpdateOrder(db,orderTicket.OrderId,orderTicket.FirstName,orderTicket.LastName);
-                UpdateTicket(db,orderTicket.OrderId,orderTicket.TicketNumber,orderTicket.EventDate, orderTicket.TicketId);
+                UpdateOrder(db,orderTicket.Id, orderTicket.OrderId,orderTicket.FirstName,orderTicket.LastName);
+                UpdateTicket(db,orderTicket.Id,orderTicket.TicketNumber,orderTicket.EventDate, orderTicket.TicketId);
             }
         }
 
-        private void UpdateOrder(DBContext db, int orderId, string firstName, string lastName){
-            var order = db.Orders.Where(o => o.Order_Id == orderId).FirstOrDefault();
+        private void UpdateOrder(DBContext db,int id, int orderId, string firstName, string lastName){
+            var order = db.Orders.Where(o => o.Id == id).FirstOrDefault();
             if(order == null) return;
             order.First_Name = firstName;
-            order.Last_Name = lastName;                
+            order.Last_Name = lastName;
+            order.Order_Id = orderId;
             db.SaveChanges();            
         }
 

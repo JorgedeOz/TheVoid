@@ -1,4 +1,5 @@
 export class OrderTicketModel{
+    public Id: number;
     public OrderId: number;
     public FirstName: string;
     public LastName: string;

@@ -61,13 +61,17 @@ namespace TheVoid
                         file.CopyTo(stream);
                     }
                     var csvLines = new List<string[]>();
+                    bool header = true;
                     using(var reader = new StreamReader(fullPath))
                     {                        
                         while (!reader.EndOfStream)
                         {                               
                             var line = reader.ReadLine().Split(',');
                             if(line.Length != 5) return BadRequest("Invalid file format!");
-                            csvLines.Add(line);
+                            if(!header) {
+                                csvLines.Add(line);
+                            }
+                            header = false;
                         }
                     }
                     ordenTicketMan.ImportCSVData(csvLines);
@@ -84,10 +88,10 @@ namespace TheVoid
             }
         }
 
-        [HttpDelete("{orderId}/{ticketId}")]
-        public IActionResult Delete(int orderId, int ticketId){
+        [HttpDelete("{id}/{ticketId}")]
+        public IActionResult Delete(int id, int ticketId){
             try{
-                if(!ordenTicketMan.DeleteOrder(orderId,ticketId)) return NotFound();
+                if(!ordenTicketMan.DeleteOrder(id,ticketId)) return NotFound();
                 return Ok(ordenTicketMan.GetAllOrderTickets()); 
             }catch(Exception ex){
                 return StatusCode((int)HttpStatusCode.InternalServerError,ex.Message);
@@ -98,7 +102,7 @@ namespace TheVoid
         public IActionResult Post([FromBody] OrderTicketModel orderTicket ){
             try{
                if(!ModelState.IsValid) return BadRequest();
-               if(orderTicket.OrderId == 0) ordenTicketMan.SaveOrderTicket(orderTicket);
+               if(orderTicket.Id == 0) ordenTicketMan.SaveOrderTicket(orderTicket);
                else ordenTicketMan.UpdateOrderTicket(orderTicket);
                return Ok(ordenTicketMan.GetAllOrderTickets());
             }catch(Exception ex){

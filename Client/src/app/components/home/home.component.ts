@@ -121,7 +121,7 @@ export class HomeComponent implements OnInit  {
     bootbox.confirm("Are you sure to remove the order?",(r)=>{
       if(r){
         this.showLoading("Deleting the order please wait...");
-        this.apiService.DeleteOrder(order.OrderId,order.TicketId).subscribe(
+        this.apiService.DeleteOrder(order.Id,order.TicketId).subscribe(
           (data) => {
             this.Orders = data;
             this.showSuccess("Order deleted successfuly");

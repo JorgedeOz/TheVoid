@@ -36,7 +36,7 @@
           <td>{{ order.FirstName }}</td>
           <td>{{ order.LastName }}</td>
           <td>{{ order.TicketNumber }}</td>
-          <td>{{ order.EventDate | date }}</td>
+          <td>{{ order.EventDate | date: 'MMMM d, y, h:mm a' }}</td>
           <td><a (click)="show(order)">Edit</a> | <a (click)="delete(order)">Delete</a></td>
         </tr>
       </tbody>
@@ -56,6 +56,12 @@
 
       <!-- Modal body -->
       <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <label>Order Number</label>
+                <input type="number" name="orderId" class="form-control" maxlength="50" required [(ngModel)]="CurrentOrder.OrderId"/>
+            </div>            
+        </div>
         <div class="row">
           <div class="col-md-6">
             <label>First Name</label>
